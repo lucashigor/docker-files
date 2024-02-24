@@ -19,12 +19,18 @@ scrape_configs:
   static_configs:
   - targets:
     - localhost:9090
-- job_name: andor
+- job_name: ahsoka
   honor_timestamps: true
   scrape_interval: 15s
+  oauth2:
+    client_id: prometheus
+    client_secret: qKbVRGFxY4fSs5kD2QJMmql2QvLSkRye
+    token_url: http://localhost:8080/realms/FamilyBudget/protocol/openid-connect/token
+    endpoint_params:
+      grant_type: client_credentials
   scrape_timeout: 10s
   metrics_path: /metrics
   scheme: http
   static_configs:
   - targets:
-    - andor:5000
+    - localhost:8889

@@ -12,8 +12,7 @@ services:
       - '5432:5432'
     volumes:
       - ./postgres:/var/lib/postgresql/data
-    networks:
-      - custom-budget
+    network_mode: "host"
 
   keycloak:
     container_name: custom_keycloak
@@ -23,50 +22,40 @@ services:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=P@55w0rd
       - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak?user=postgres&password=P@55w0rd&sslmode=disable&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory
+      - KC_DB_URL=jdbc:postgresql://127.0.0.1:5432/keycloak?user=postgres&password=P@55w0rd&sslmode=disable&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory
       - KC_HOSTNAME_STRICT=false
       - KC_HOSTNAME_STRICT_HTTPS=false
       - KC_HTTP_ENABLED=true
       - KC_PROXY=edge
-    ports:
-      - "8080:8080"
-    networks:
-      - custom-budget
+    network_mode: "host"
     command:
       - start-dev
 
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    command:
-#      - '--config.file=/etc/prometheus/prometheus.yml'
-#    ports:
-#      - 9090:9090
-#    restart: unless-stopped
-#    volumes:
-#      - ./prometheus:/etc/prometheus
-#      - prom_data:/prometheus
-#    networks:
-#      - custom-budget
-#
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    ports:
-#      - 9002:3000
-#    restart: unless-stopped
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=P@55w0rd
-#    volumes:
-#      - ./grafana:/etc/grafana/provisioning/datasources
-#    networks:
-#      - custom-budget
-#
-#volumes:
-#  prom_data:
-      
-networks:
-  custom-budget:
-    name: custom-budget
-    driver: bridge
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+    network_mode: "host"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 9002:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=P@55w0rd
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+    network_mode: "host" 
+
+volumes:
+  prom_data:
