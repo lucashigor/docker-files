@@ -6,15 +6,9 @@ services:
     restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=53nH@d3f@u1t4d@5IT
+      - POSTGRES_PASSWORD=P@55w0rd
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - ./postgres:/var/lib/postgresql/data
-    networks:
-      - custom-keycloak
-
-networks:
-  custom-keycloak:
-    name: custom-keycloak
-    driver: bridge
+    network_mode: host

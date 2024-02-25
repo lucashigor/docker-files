@@ -1,0 +1,56 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4318
+      http:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  attributes:
+    actions:
+      - action: insert
+        key: loki.attribute.labels
+        value: http_status_code
+
+  resource:
+    attributes:
+      - action: insert
+        key: loki.resource.labels
+        value: host_name, pod_name
+
+  batch:
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    const_labels:
+      label1: value1
+
+  debug:
+    verbosity: detailed
+
+  loki:
+    endpoint: http://adasit-loki-1:3100/loki/api/v1/push
+    tls:
+      insecure: true
+
+  otlp:
+    endpoint: adasit-tempo-1:4317
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [resource, attributes]
+      exporters: [loki]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]

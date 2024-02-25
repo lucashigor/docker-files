@@ -18,15 +18,19 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets:
-          - localhost:9090
-  - job_name: Ahsoka
+          - prometheus:9090
+  - job_name: ahsoka
     honor_timestamps: true
     scrape_interval: 15s
+    #    oauth2:
+    #      client_id: prometheus
+    #      client_secret: qKbVRGFxY4fSs5kD2QJMmql2QvLSkRye
+    #      token_url: http://custom_keycloak:8080/realms/FamilyBudget/protocol/openid-connect/token
+    #      endpoint_params:
+    #        grant_type: client_credentials
     scrape_timeout: 10s
     metrics_path: /metrics
-    scheme: https
-    tls_config:
-      insecure_skip_verify: true
+    scheme: http
     static_configs:
       - targets:
-          - localhost:7283
+          - otel-collector:8889
